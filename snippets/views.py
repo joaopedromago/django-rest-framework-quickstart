@@ -1,10 +1,17 @@
-# Using Generic Classes #
-from snippets.models import Snippet
+# Authentication and Permission #
+from rest_framework import generics, viewsets
 from snippets.serializers import SnippetSerializer, UserSerializer
-from rest_framework import generics
-from django.contrib.auth.models import User
+from snippets.models import Snippet
 from rest_framework import permissions
-from snippets.permissions import IsOwnerOrReadOnly
+from django.contrib.auth.models import User
+
+class SnippetsViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows snippets to be viewed or edited.
+    """
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
@@ -14,6 +21,9 @@ class UserList(generics.ListAPIView):
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+# Using Generic Classes #
+from snippets.permissions import IsOwnerOrReadOnly
 
 
 class SnippetList(generics.ListCreateAPIView):
@@ -32,19 +42,7 @@ class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
         permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
 # Using Mixins #
-# from snippets.models import Snippet
-# from snippets.serializers import SnippetSerializer, UserSerializer
 # from rest_framework import mixins
-# from rest_framework import generics
-# from django.contrib.auth.models import User
-
-# class UserList(generics.ListAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
-
-# class UserDetail(generics.RetrieveAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
 
 # class SnippetList(mixins.ListModelMixin,
 #                   mixins.CreateModelMixin,
@@ -76,14 +74,11 @@ class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
 #         return self.destroy(request, *args, **kwargs)
 
 # Class Based #
-# from snippets.models import Snippet
-# from snippets.serializers import SnippetSerializer, UserSerializer
 # from django.http import Http404
 # from rest_framework.views import APIView
 # from rest_framework.response import Response
 # from rest_framework import status
 # from django.contrib.auth.models import User
-# from rest_framework import generics
 
 # class UserList(generics.ListAPIView):
 #     queryset = User.objects.all()
@@ -142,8 +137,6 @@ class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
 # from django.http import HttpResponse, JsonResponse
 # from django.views.decorators.csrf import csrf_exempt
 # from rest_framework.parsers import JSONParser
-# from snippets.models import Snippet
-# from snippets.serializers import SnippetSerializer
 
 
 # @csrf_exempt
@@ -195,8 +188,6 @@ class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
 # from rest_framework import status
 # from rest_framework.decorators import api_view
 # from rest_framework.response import Response
-# from snippets.models import Snippet
-# from snippets.serializers import SnippetSerializer
 
 
 # @api_view(['GET', 'POST'])
